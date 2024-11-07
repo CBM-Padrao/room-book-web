@@ -57,7 +57,7 @@ export function BookRoom({
   return (
     <Modal open={open} onClose={handleClose} size="lg">
       <Modal.Header>
-        <Modal.Title>Book a Room</Modal.Title>
+        <Modal.Title>Agendar um horário</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form className="flex flex-col gap-4 h-96">
@@ -80,7 +80,7 @@ export function BookRoom({
           onClick={handleSubmit}
           disabled={!room || !date || !time || time[0] >= time[1]}
         >
-          Book
+          Agendar
         </Button>
       </Modal.Footer>
     </Modal>

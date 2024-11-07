@@ -23,7 +23,11 @@ export function Calendar() {
     const bookingsOfTheDay = getBookingsOfTheDay(bookings, date);
     setDate(date);
 
-    if (bookingsOfTheDay.length === 0) setOpen(true);
+    if (bookingsOfTheDay.length === 0) handleOpen();
+  }
+
+  function handleOpen() {
+    setOpen(true);
   }
 
   function handleClose() {
@@ -47,7 +51,7 @@ export function Calendar() {
 
   return (
     <>
-      <HStack className="m-auto">
+      <HStack className="m-auto" alignItems="flex-start">
         <RSCalendar
           bordered
           value={value}
@@ -63,7 +67,10 @@ export function Calendar() {
               : 'text-zinc-400')
           }
         />
-        <Bookings bookings={getBookingsOfTheDay(bookings, date)} />
+        <Bookings
+          bookings={getBookingsOfTheDay(bookings, date)}
+          handleOpen={handleOpen}
+        />
       </HStack>
       <BookRoom
         open={open}
