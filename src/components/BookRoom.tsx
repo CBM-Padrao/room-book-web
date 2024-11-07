@@ -61,7 +61,7 @@ export function BookRoom({
       </Modal.Header>
       <Modal.Body>
         <form className="flex flex-col gap-4 h-96">
-          Title
+          Título
           <Input value={title} onChange={setTitle} />
           Sala
           <SelectPicker data={selectData} onChange={setRoom} />
