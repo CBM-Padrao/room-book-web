@@ -20,7 +20,7 @@ export function Calendar() {
       <RSCalendar
         bordered
         value={value}
-        className="w-[784px] text-zinc-400"
+        className="w-[784px] text-zinc-400 m-auto"
         onSelect={handleOpen}
         onChange={setValue}
         cellClassName={date =>
