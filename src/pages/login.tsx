@@ -1,14 +1,27 @@
+import { useNavigate } from 'react-router-dom';
+import { FormEvent } from 'react';
 import { Button, Input } from 'rsuite';
 
 import Logo from '../assets/logoipsum.svg';
 
 export function Login() {
+  const navigate = useNavigate();
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    navigate('/');
+  }
+
   return (
     <div className="flex h-screen">
       <div className="m-auto bg-[#1a1d24] w-[550px] p-10 rounded-lg">
         <img src={Logo} alt="Logo" className="m-auto" />
 
-        <form className="flex flex-col justify-center gap-6 mt-20">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col justify-center gap-6 mt-20"
+        >
           <Input type="text" placeholder="Matrícula" className="!p-3" />
           <Input type="password" placeholder="Senha" className="!p-3" />
 
