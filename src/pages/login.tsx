@@ -1,37 +1,26 @@
+import { Button, Input } from 'rsuite';
+
+import Logo from '../assets/logoipsum.svg';
+
 export function Login() {
   return (
-    <div className="grid grid-cols-[850px_1fr] justify-items-center h-screen">
-      <aside className="w-full h-full flex flex-col justify-center items-center bg-slate-600 text-white">
-        <h1>Login</h1>
-        <p>Log in to your account</p>
-      </aside>
+    <div className="flex h-screen">
+      <div className="m-auto bg-[#1a1d24] w-[550px] p-10 rounded-lg">
+        <img src={Logo} alt="Logo" className="m-auto" />
 
-      <form className="flex flex-col justify-center p-10 gap-4 w-[550px]">
-        <label htmlFor="registration" className="text-zinc-800">
-          Matrícula
-        </label>
-        <input
-          type="text"
-          name="registration"
-          className="bg-slate-200 p-2 rounded-md text-slate-700"
-        />
+        <form className="flex flex-col justify-center gap-6 mt-20">
+          <Input type="text" placeholder="Matrícula" className="!p-3" />
+          <Input type="password" placeholder="Senha" className="!p-3" />
 
-        <label htmlFor="password" className="text-zinc-800">
-          Senha
-        </label>
-        <input
-          type="password"
-          name="password"
-          className="bg-slate-200 p-2 rounded-md  text-slate-700"
-        />
-
-        <button
-          type="submit"
-          className="bg-slate-500 rounded-md p-2 text-white mt-3"
-        >
-          Login
-        </button>
-      </form>
+          <Button
+            appearance="primary"
+            type="submit"
+            className="bg-slate-500 rounded-md !py-3 text-white mt-3 !font-bold"
+          >
+            Login
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
