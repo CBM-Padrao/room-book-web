@@ -22,7 +22,7 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
 
   if (bookings.length === 0) {
     return (
-      <VStack className="justify-center bg-[#0f131a] w-96 self-stretch rounded-[6px] border-[#292d33] border-[1px]">
+      <VStack className="justify-center bg-[#121416] w-96 self-stretch rounded-[6px] border-[#292d33] border-[1px]">
         <Text className="text-center !text-zinc-400 p-4 text-sm">
           Selecione um dia no calendário para ver e criar agendamentos
         </Text>
