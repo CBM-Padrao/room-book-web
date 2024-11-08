@@ -3,27 +3,17 @@ import { TimeRound } from '@rsuite/icons';
 import { Modal, SelectPicker, Button, DateRangePicker, Input } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import dayjs from 'dayjs';
-
-export type Booking = {
-  start: Date;
-  end: Date;
-  title: string;
-  roomId: string;
-};
+import { useBooking } from '../contexts/BookingContext';
 
 type BookRoomProps = {
   open: boolean;
   date: Date | null;
   handleClose: () => void;
-  handleBook: (booking: Booking) => void;
 };
 
-export function BookRoom({
-  open,
-  date,
-  handleClose,
-  handleBook
-}: Readonly<BookRoomProps>) {
+export function BookRoom({ open, date, handleClose }: Readonly<BookRoomProps>) {
+  const { addBooking } = useBooking();
+
   const selectData = ['Sala1', 'Sala2', 'Sala3'].map(room => ({
     label: room,
     value: room
@@ -42,7 +32,7 @@ export function BookRoom({
       .set('hour', time![1].getHours())
       .set('minute', time![1].getMinutes());
 
-    handleBook({
+    addBooking({
       title,
       roomId: room!,
       start: startDate.toDate(),
@@ -52,6 +42,7 @@ export function BookRoom({
     setTitle('');
     setRoom(null);
     setTime(null);
+    handleClose();
   }
 
   return (

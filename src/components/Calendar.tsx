@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Calendar as RSCalendar, Badge, HStack } from 'rsuite';
 import { BookRoom } from './BookRoom';
-import type { Booking } from './BookRoom';
 import { Bookings } from './Bookings';
+import { Booking, useBooking } from '../contexts/BookingContext';
 
 function getBookingsOfTheDay(bookings: Booking[], date: Date | null) {
   return bookings.filter(b => {
@@ -12,9 +12,10 @@ function getBookingsOfTheDay(bookings: Booking[], date: Date | null) {
 }
 
 export function Calendar() {
+  const { bookings } = useBooking();
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(dayjs().toDate());
-  const [bookings, setBookings] = useState<Booking[]>([]);
   const [date, setDate] = useState<Date | null>(null);
 
   function handleSelect(date: Date) {
@@ -32,11 +33,6 @@ export function Calendar() {
 
   function handleClose() {
     setOpen(false);
-  }
-
-  function handleBook({ title, roomId, start, end }: Booking) {
-    setBookings([...bookings, { title, roomId, start, end }]);
-    handleClose();
   }
 
   function renderCell(cellDate: Date) {
@@ -72,12 +68,7 @@ export function Calendar() {
           handleOpen={handleOpen}
         />
       </HStack>
-      <BookRoom
-        open={open}
-        handleClose={handleClose}
-        handleBook={handleBook}
-        date={date}
-      />
+      <BookRoom open={open} handleClose={handleClose} date={date} />
     </>
   );
 }
