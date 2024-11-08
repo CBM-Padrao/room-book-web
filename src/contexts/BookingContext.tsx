@@ -1,4 +1,10 @@
-import { useContext, createContext, useState, useMemo } from 'react';
+import {
+  useContext,
+  createContext,
+  useState,
+  useMemo,
+  useCallback
+} from 'react';
 
 export type Booking = {
   start: Date;
@@ -13,7 +19,9 @@ type BookingProviderProps = {
 
 type BookingContextData = {
   bookings: Booking[];
-  addBooking: (booking: Booking) => void;
+  createBooking: (booking: Booking) => void;
+  deleteBooking: (booking: Booking) => void;
+  updateBooking: (oldBooking: Booking, newBooking: Booking) => void;
 };
 
 const BookingContext = createContext({} as BookingContextData);
@@ -26,14 +34,49 @@ export function useBooking() {
 export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
   const [bookings, setBookings] = useState<Booking[]>([]);
 
+  const createBooking = useCallback(
+    (booking: Booking) => {
+      setBookings([...bookings, booking]);
+    },
+    [bookings]
+  );
+
+  const updateBooking = useCallback(
+    (oldBooking: Booking, newBooking: Booking) => {
+      const newBookings = bookings.map(b => {
+        if (b.start === oldBooking.start && b.roomId === oldBooking.roomId) {
+          return newBooking;
+        }
+
+        return b;
+      });
+
+      setBookings(newBookings);
+    },
+    [bookings]
+  );
+
+  const deleteBooking = useCallback(
+    (booking: Booking) => {
+      const newBookings = bookings.filter(b => {
+        if (b.start !== booking.start && b.roomId !== booking.roomId) {
+          return b;
+        }
+      });
+
+      setBookings(newBookings);
+    },
+    [bookings]
+  );
+
   const value: BookingContextData = useMemo(() => {
     return {
       bookings,
-      addBooking: (booking: Booking) => {
-        setBookings([...bookings, booking]);
-      }
+      createBooking,
+      deleteBooking,
+      updateBooking
     };
-  }, [bookings]);
+  }, [bookings, createBooking, updateBooking, deleteBooking]);
   return (
     <BookingContext.Provider value={value}>{children}</BookingContext.Provider>
   );

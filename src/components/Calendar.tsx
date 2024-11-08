@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Calendar as RSCalendar, Badge, HStack } from 'rsuite';
-import { BookRoom } from './BookRoom';
+import { BookingModal } from './BookingModal';
 import { Bookings } from './Bookings';
 import { Booking, useBooking } from '../contexts/BookingContext';
 
@@ -68,7 +68,7 @@ export function Calendar() {
           handleOpen={handleOpen}
         />
       </HStack>
-      <BookRoom open={open} handleClose={handleClose} date={date} />
+      <BookingModal open={open} handleClose={handleClose} date={date} />
     </>
   );
 }
