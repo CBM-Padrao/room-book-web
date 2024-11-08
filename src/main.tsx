@@ -13,19 +13,26 @@ import { AdminLogin } from './pages/admin/login';
 
 import { BookingProvider } from './contexts/BookingContext.tsx';
 import { locale } from './lib/rsuite.ts';
+import { Root } from './layouts/Root.tsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: <Home />
+      },
+      {
+        path: 'admin',
+        element: <Admin />
+      }
+    ]
   },
   {
     path: '/login',
     element: <Login />
-  },
-  {
-    path: '/admin',
-    element: <Admin />
   },
   {
     path: '/admin/login',
