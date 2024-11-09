@@ -12,6 +12,7 @@ import { Admin } from './pages/admin';
 import { AdminLogin } from './pages/admin/login';
 
 import { BookingProvider } from './contexts/BookingContext.tsx';
+import { UserProvider } from './contexts/UserContext.tsx';
 import { locale } from './lib/rsuite.ts';
 import { Root } from './layouts/Root.tsx';
 
@@ -43,9 +44,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <CustomProvider theme="dark" locale={locale}>
+     <UserProvider>
       <BookingProvider>
         <RouterProvider router={router} />
       </BookingProvider>
+     </UserProvider>
     </CustomProvider>
   </StrictMode>
 );

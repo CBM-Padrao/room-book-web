@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Table as RSTable, Pagination, IconButton, Button } from 'rsuite';
 import { Edit, Trash } from '@rsuite/icons';
-import { mockUsers } from '../tests/mock';
 import { TableModal } from './TableModal';
-
-const defaultData = mockUsers(100);
+import { User, useUser } from '../contexts/UserContext';
 
 export function Table() {
+  const { users } = useUser();
+
+  const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
@@ -16,7 +17,7 @@ export function Table() {
     setLimit(dataKey);
   };
 
-  const data = defaultData.filter((_, i) => {
+  const data = users.filter((_, i) => {
     const start = limit * (page - 1);
     const end = start + limit;
 
@@ -29,8 +30,10 @@ export function Table() {
 
   return (
     <div className="m-auto">
-      <TableModal open={open} handleClose={handleClose} />
-      
+      {user && open && (
+        <TableModal open={open} handleClose={handleClose} user={user} />
+      )}
+
       <Button
         style={{ padding: '5px 15px' }}
         // className="!absolute top-2 right-2 z-10"
@@ -52,7 +55,7 @@ export function Table() {
       >
         <RSTable.Column width={100} align="center" fixed>
           <RSTable.HeaderCell>Matrícula</RSTable.HeaderCell>
-          <RSTable.Cell dataKey="id" />
+          <RSTable.Cell dataKey="register" />
         </RSTable.Column>
 
         <RSTable.Column width={200}>
@@ -94,7 +97,7 @@ export function Table() {
           maxButtons={5}
           size="xs"
           layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-          total={defaultData.length}
+          total={users.length}
           limitOptions={[10, 30, 50]}
           limit={limit}
           activePage={page}
