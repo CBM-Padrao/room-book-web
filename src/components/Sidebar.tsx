@@ -3,6 +3,7 @@ import { Admin, Dashboard, Gear, Peoples } from '@rsuite/icons';
 import { JSXElementConstructor, ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconProps } from '@rsuite/icons/esm/Icon';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const navItems: NavItemProps[] = [
   {
@@ -64,7 +65,7 @@ export function Sidebar() {
   const navigate = useNavigate();
 
   const [expanded, setExpanded] = useState(true);
-  const [activeKey, setActiveKey] = useState('1');
+  const [activeKey, setActiveKey] = useLocalStorage('activeKey', '1');
 
   function handleNav(eventKey: string) {
     const items = [
