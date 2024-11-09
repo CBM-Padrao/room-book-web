@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Table as RSTable, Pagination, IconButton, Button } from 'rsuite';
 import { Edit, Trash } from '@rsuite/icons';
 import { mockUsers } from '../tests/mock';
+import { TableModal } from './TableModal';
 
 const defaultData = mockUsers(100);
 
 export function Table() {
+  const [open, setOpen] = useState(false);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
 
@@ -21,12 +23,19 @@ export function Table() {
     return i >= start && i < end;
   });
 
+  function handleClose() {
+    setOpen(false);
+  }
+
   return (
     <div className="m-auto">
+      <TableModal open={open} handleClose={handleClose} />
+      
       <Button
         style={{ padding: '5px 15px' }}
         // className="!absolute top-2 right-2 z-10"
         className="!mb-4"
+        onClick={() => setOpen(true)}
       >
         Adicionar membro
       </Button>
