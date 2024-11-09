@@ -76,7 +76,5 @@ export function UserProvider({ children }: Readonly<UserProviderProps>) {
       updateUser
     };
   }, [users, createUser, updateUser, deleteUser]);
-  return (
-    <UserContext.Provider value={value}>{children}</UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }

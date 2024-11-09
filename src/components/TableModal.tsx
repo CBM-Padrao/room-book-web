@@ -8,10 +8,7 @@ type TableModalProps = {
   user: User;
 };
 
-export function TableModal({
-  open,
-  handleClose
-}: Readonly<TableModalProps>) {
+export function TableModal({ open, handleClose }: Readonly<TableModalProps>) {
   const { createUser } = useUser();
 
   const [register, setRegister] = useState('');
@@ -19,7 +16,7 @@ export function TableModal({
   const [email, setEmail] = useState('');
 
   function handleSubmit() {
-    const newUser = {register, name, email};
+    const newUser = { register, name, email };
     createUser(newUser);
 
     setRegister('');
@@ -44,10 +41,7 @@ export function TableModal({
         </form>
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          onClick={handleSubmit}
-          appearance="primary"
-        >
+        <Button onClick={handleSubmit} appearance="primary">
           Adicionar
         </Button>
       </Modal.Footer>
