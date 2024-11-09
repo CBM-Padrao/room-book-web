@@ -5,7 +5,7 @@ import { DateRange } from 'rsuite/esm/DateRangePicker';
 import dayjs from 'dayjs';
 import { Booking, useBooking } from '../contexts/BookingContext';
 
-type BookRoomProps = {
+type BookingModalProps = {
   open: boolean;
   date: Date | null;
   booking?: Booking | null;
@@ -17,7 +17,7 @@ export function BookingModal({
   date,
   booking,
   handleClose
-}: Readonly<BookRoomProps>) {
+}: Readonly<BookingModalProps>) {
   const { createBooking, updateBooking } = useBooking();
 
   const selectData = ['Sala1', 'Sala2', 'Sala3'].map(room => ({
