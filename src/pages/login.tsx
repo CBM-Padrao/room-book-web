@@ -3,13 +3,16 @@ import { FormEvent } from 'react';
 import { Button, Input } from 'rsuite';
 
 import Logo from '../assets/logoipsum.svg';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export function Login() {
   const navigate = useNavigate();
+  const [, setActiveKey] = useLocalStorage('activeKey', '1');
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
+    setActiveKey('1');
     navigate('/');
   }
 
