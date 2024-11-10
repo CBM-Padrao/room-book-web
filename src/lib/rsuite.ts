@@ -3,10 +3,10 @@ import ptBR from 'date-fns/locale/pt-BR';
 const DateTimeFormats = {
   sunday: 'Dom',
   monday: 'Seg',
-  tuesday: 'Tet',
+  tuesday: 'Ter',
   wednesday: 'Qua',
   thursday: 'Qui',
-  friday: 'Ses',
+  friday: 'Sex',
   saturday: 'Sab',
   ok: 'OK',
   today: 'Hoje',
