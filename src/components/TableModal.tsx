@@ -8,7 +8,11 @@ type TableModalProps = {
   user: User | null;
 };
 
-export function TableModal({ open, handleClose, user }: Readonly<TableModalProps>) {
+export function TableModal({
+  open,
+  handleClose,
+  user
+}: Readonly<TableModalProps>) {
   const { createUser, updateUser } = useUser();
 
   const [register, setRegister] = useState(() => user?.register ?? '');
@@ -19,7 +23,7 @@ export function TableModal({ open, handleClose, user }: Readonly<TableModalProps
   function handleSubmit() {
     const newUser = { register, name, email, isAdmin };
 
-    if (user) updateUser(user, newUser); 
+    if (user) updateUser(user, newUser);
     else createUser(newUser);
 
     setRegister('');

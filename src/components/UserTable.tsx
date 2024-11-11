@@ -31,9 +31,7 @@ export function UserTable() {
 
   return (
     <div className="m-auto">
-      {open && (
-        <TableModal open={open} handleClose={handleClose} user={user} />
-      )}
+      {open && <TableModal open={open} handleClose={handleClose} user={user} />}
 
       <Button
         style={{ padding: '5px 15px' }}
@@ -66,7 +64,7 @@ export function UserTable() {
         <RSTable.Column width={200} flexGrow={1}>
           <RSTable.HeaderCell>Email</RSTable.HeaderCell>
           <RSTable.Cell dataKey="email" />
-        </RSTable.Column> 
+        </RSTable.Column>
 
         <RSTable.Column width={200}>
           <RSTable.HeaderCell>Administrador</RSTable.HeaderCell>
@@ -90,27 +88,27 @@ export function UserTable() {
         <RSTable.Column width={200} flexGrow={1}>
           <RSTable.HeaderCell>Ações</RSTable.HeaderCell>
           <RSTable.Cell style={{ display: 'flex', padding: 6, gap: 4 }}>
-          {rowData => (
-            <>
-              <IconButton
-                appearance="subtle"
-                color="blue"
-                icon={<Edit />}
-                onClick={() => {
-                  setUser(rowData as User);
-                  setOpen(true);
-                }}
-              />
-              <IconButton
-                appearance="subtle"
-                color="red"
-                icon={<Trash />}
-                onClick={() => {
-                  deleteUser(rowData as User);
-                }}
-              />
-            </>
-          )}
+            {rowData => (
+              <>
+                <IconButton
+                  appearance="subtle"
+                  color="blue"
+                  icon={<Edit />}
+                  onClick={() => {
+                    setUser(rowData as User);
+                    setOpen(true);
+                  }}
+                />
+                <IconButton
+                  appearance="subtle"
+                  color="red"
+                  icon={<Trash />}
+                  onClick={() => {
+                    deleteUser(rowData as User);
+                  }}
+                />
+              </>
+            )}
           </RSTable.Cell>
         </RSTable.Column>
       </RSTable>
