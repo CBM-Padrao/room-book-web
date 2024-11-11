@@ -5,7 +5,7 @@ import { TableModal } from './TableModal';
 import { User, useUser } from '../contexts/UserContext';
 
 export function UserTable() {
-  const { users } = useUser();
+  const { users, deleteUser } = useUser();
 
   const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
@@ -26,17 +26,17 @@ export function UserTable() {
 
   function handleClose() {
     setOpen(false);
+    setUser(null);
   }
 
   return (
     <div className="m-auto">
-      {user && open && (
+      {open && (
         <TableModal open={open} handleClose={handleClose} user={user} />
       )}
 
       <Button
         style={{ padding: '5px 15px' }}
-        // className="!absolute top-2 right-2 z-10"
         className="!mb-4"
         onClick={() => setOpen(true)}
       >
@@ -66,23 +66,51 @@ export function UserTable() {
         <RSTable.Column width={200} flexGrow={1}>
           <RSTable.HeaderCell>Email</RSTable.HeaderCell>
           <RSTable.Cell dataKey="email" />
+        </RSTable.Column> 
+
+        <RSTable.Column width={200}>
+          <RSTable.HeaderCell>Administrador</RSTable.HeaderCell>
+          <RSTable.Cell
+            dataKey="isAdmin"
+            renderCell={rowData => {
+              const bgColor = (rowData as boolean)
+                ? 'bg-green-500'
+                : 'bg-red-500';
+
+              return (
+                <div className="flex items-center">
+                  <div className={`w-4 h-4 rounded-full mr-2 ${bgColor}`}></div>
+                  <span>{(rowData as boolean) ? 'Sim' : 'Não'}</span>
+                </div>
+              );
+            }}
+          />
         </RSTable.Column>
 
         <RSTable.Column width={200} flexGrow={1}>
           <RSTable.HeaderCell>Ações</RSTable.HeaderCell>
           <RSTable.Cell style={{ display: 'flex', padding: 6, gap: 4 }}>
-            <IconButton
-              appearance="subtle"
-              color="blue"
-              icon={<Edit />}
-              onClick={() => {}}
-            />
-            <IconButton
-              appearance="subtle"
-              color="red"
-              icon={<Trash />}
-              onClick={() => {}}
-            />
+          {rowData => (
+            <>
+              <IconButton
+                appearance="subtle"
+                color="blue"
+                icon={<Edit />}
+                onClick={() => {
+                  setUser(rowData as User);
+                  setOpen(true);
+                }}
+              />
+              <IconButton
+                appearance="subtle"
+                color="red"
+                icon={<Trash />}
+                onClick={() => {
+                  deleteUser(rowData as User);
+                }}
+              />
+            </>
+          )}
           </RSTable.Cell>
         </RSTable.Column>
       </RSTable>
