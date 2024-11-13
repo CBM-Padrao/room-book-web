@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Table as RSTable, Pagination, IconButton, Button } from 'rsuite';
 import { Edit, Trash } from '@rsuite/icons';
-import { TableModal } from './TableModal';
+import { UserModal } from './UserModal';
 import { User, useUser } from '../contexts/UserContext';
 
 export function UserTable() {
@@ -32,7 +32,7 @@ export function UserTable() {
   return (
     <div className="m-auto">
       {open && (
-        <TableModal open={open} handleClose={handleClose} user={user} />
+        <UserModal open={open} handleClose={handleClose} user={user} />
       )}
 
       <Button
