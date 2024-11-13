@@ -10,6 +10,7 @@ export type User = {
   register: string;
   name: string;
   email: string;
+  isAdmin?: boolean;
 };
 
 type UserProviderProps = {
@@ -58,7 +59,7 @@ export function UserProvider({ children }: Readonly<UserProviderProps>) {
   const deleteUser = useCallback(
     (user: User) => {
       const newUsers = users.filter(u => {
-        if (u.register === user.register) {
+        if (u.register !== user.register) {
           return u;
         }
       });

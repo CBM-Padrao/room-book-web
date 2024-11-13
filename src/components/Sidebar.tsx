@@ -55,7 +55,7 @@ const navItems: NavItemProps[] = [
       {
         eventKey: '4-2',
         title: 'Adicionar salas',
-        path: '/'
+        path: '/rooms'
       }
     ]
   }

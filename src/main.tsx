@@ -15,6 +15,7 @@ import { BookingProvider } from './contexts/BookingContext.tsx';
 import { UserProvider } from './contexts/UserContext.tsx';
 import { locale } from './lib/rsuite.ts';
 import { Root } from './layouts/Root.tsx';
+import { Rooms } from './pages/rooms.tsx';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,11 @@ const router = createBrowserRouter([
       {
         path: 'admin',
         element: <Admin />
+      },
+      {
+          path: 'rooms',
+          element: <Rooms />
+
       }
     ]
   },
