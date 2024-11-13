@@ -64,7 +64,7 @@ export function UserTable() {
         <RSTable.Column width={200} flexGrow={1}>
           <RSTable.HeaderCell>Email</RSTable.HeaderCell>
           <RSTable.Cell dataKey="email" />
-        </RSTable.Column> 
+        </RSTable.Column>
 
         <RSTable.Column width={200}>
           <RSTable.HeaderCell>Administrador</RSTable.HeaderCell>

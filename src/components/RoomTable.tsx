@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { Table as RSTable, Pagination, IconButton, Button, Input } from 'rsuite';
+import {
+  Table as RSTable,
+  Pagination,
+  IconButton,
+  Button,
+  Input
+} from 'rsuite';
 import { Edit, Trash, Save } from '@rsuite/icons';
 
 const defaultData = Array.from({ length: 4 }, (_, i) => ({
@@ -7,7 +13,6 @@ const defaultData = Array.from({ length: 4 }, (_, i) => ({
   name: `Sala ${i + 1}`,
   status: ''
 }));
-
 
 export function RoomTable() {
   const [rooms, setRooms] = useState(defaultData);
@@ -31,16 +36,16 @@ export function RoomTable() {
     const newRoom = rooms.map(room => {
       if (room.id == id) return { id, name, status: room.status };
 
-      return room
+      return room;
     });
 
     setRooms(newRoom);
   }
 
-
   function handleEdit(id: number) {
     const newRooms = rooms.map(room => {
-      if (room.id == id) return { ...room, status: room.status == '' ? 'EDIT' : '' };
+      if (room.id == id)
+        return { ...room, status: room.status == '' ? 'EDIT' : '' };
 
       return room;
     });
@@ -80,9 +85,9 @@ export function RoomTable() {
       >
         <RSTable.Column width={100} flexGrow={1} fixed>
           <RSTable.HeaderCell>Nome</RSTable.HeaderCell>
-          <RSTable.Cell dataKey="name" >
+          <RSTable.Cell dataKey="name">
             {rowData => (
-              <EditableCell 
+              <EditableCell
                 id={rowData.id}
                 name={rowData.name}
                 status={rowData.status}
@@ -95,22 +100,22 @@ export function RoomTable() {
         <RSTable.Column width={200}>
           <RSTable.HeaderCell>Ações</RSTable.HeaderCell>
           <RSTable.Cell style={{ display: 'flex', padding: 6, gap: 4 }}>
-          {rowData => (
-            <>
-              <IconButton
-                appearance="subtle"
-                color="blue"
-                icon={rowData.status == 'EDIT' ? <Save /> : <Edit />}
-                onClick={() => handleEdit(rowData.id)}
-              />
-              <IconButton
-                appearance="subtle"
-                color="red"
-                icon={<Trash />}
-                onClick={() => handleRemove(rowData.id)}
-              />
-            </>
-          )}
+            {rowData => (
+              <>
+                <IconButton
+                  appearance="subtle"
+                  color="blue"
+                  icon={rowData.status == 'EDIT' ? <Save /> : <Edit />}
+                  onClick={() => handleEdit(rowData.id)}
+                />
+                <IconButton
+                  appearance="subtle"
+                  color="red"
+                  icon={<Trash />}
+                  onClick={() => handleRemove(rowData.id)}
+                />
+              </>
+            )}
           </RSTable.Cell>
         </RSTable.Column>
       </RSTable>
@@ -137,23 +142,26 @@ export function RoomTable() {
   );
 }
 
-type EditableCellProps ={
+type EditableCellProps = {
   id: number;
   name: string;
   status: string;
-  handleChange: (id: number, name: string) => void
+  handleChange: (id: number, name: string) => void;
 };
 
-function EditableCell({id, name, status, handleChange }: EditableCellProps) {
+function EditableCell({ id, name, status, handleChange }: EditableCellProps) {
   const isEditing = status === 'EDIT';
 
   return (
-      <>
-        {isEditing ? (
-        <Input defaultValue={name} onChange={value => handleChange(id, value)} />
-      ) :(
+    <>
+      {isEditing ? (
+        <Input
+          defaultValue={name}
+          onChange={value => handleChange(id, value)}
+        />
+      ) : (
         name
       )}
-        </>
-  )
+    </>
+  );
 }
