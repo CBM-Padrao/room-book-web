@@ -79,11 +79,12 @@ export function RoomTable() {
         width={1024}
         height={600}
         headerHeight={45}
+        rowHeight={60}
         data={data}
         bordered
         className="bg-[#121416] rounded-md mt-6"
       >
-        <RSTable.Column width={100} flexGrow={1} fixed>
+        <RSTable.Column width={100} flexGrow={1} fixed verticalAlign="center">
           <RSTable.HeaderCell>Nome</RSTable.HeaderCell>
           <RSTable.Cell dataKey="name">
             {rowData => (
