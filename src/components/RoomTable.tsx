@@ -149,7 +149,12 @@ type EditableCellProps = {
   handleChange: (id: number, name: string) => void;
 };
 
-function EditableCell({ id, name, status, handleChange }: EditableCellProps) {
+function EditableCell({
+  id,
+  name,
+  status,
+  handleChange
+}: Readonly<EditableCellProps>) {
   const isEditing = status === 'EDIT';
 
   return (
