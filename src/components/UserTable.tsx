@@ -85,25 +85,6 @@ export function UserTable() {
           />
         </RSTable.Column>
 
-        <RSTable.Column width={200}>
-          <RSTable.HeaderCell>Administrador</RSTable.HeaderCell>
-          <RSTable.Cell
-            dataKey="isAdmin"
-            renderCell={rowData => {
-              const bgColor = (rowData as boolean)
-                ? 'bg-green-500'
-                : 'bg-red-500';
-
-              return (
-                <div className="flex items-center">
-                  <div className={`w-4 h-4 rounded-full mr-2 ${bgColor}`}></div>
-                  <span>{(rowData as boolean) ? 'Sim' : 'Não'}</span>
-                </div>
-              );
-            }}
-          />
-        </RSTable.Column>
-
         <RSTable.Column width={200} flexGrow={1}>
           <RSTable.HeaderCell>Ações</RSTable.HeaderCell>
           <RSTable.Cell style={{ display: 'flex', padding: 6, gap: 4 }}>

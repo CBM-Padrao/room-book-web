@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Table as RSTable,
   Pagination,
@@ -7,15 +7,28 @@ import {
   Input
 } from 'rsuite';
 import { Edit, Trash, Save } from '@rsuite/icons';
+import { useRoom } from '../contexts/RoomContext';
 
-const defaultData = Array.from({ length: 4 }, (_, i) => ({
-  id: i,
-  name: `Sala ${i + 1}`,
-  status: ''
-}));
+type TableRoom = {
+  id: number;
+  name: string;
+  status: string | null;
+};
 
 export function RoomTable() {
-  const [rooms, setRooms] = useState(defaultData);
+  const { rooms, createRoom, updateRoom, deleteRoom } = useRoom();
+
+  const [tableRooms, setTableRooms] = useState<TableRoom[]>([]);
+
+  useEffect(() => {
+    if (rooms.length > 0) {
+      setTableRooms(
+        rooms.map(({ id, name }) => {
+          return { id, name, status: null };
+        })
+      );
+    }
+  }, [rooms]);
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
@@ -25,7 +38,7 @@ export function RoomTable() {
     setLimit(dataKey);
   };
 
-  const data = rooms.filter((_, i) => {
+  const data = tableRooms.filter((_, i) => {
     const start = limit * (page - 1);
     const end = start + limit;
 
@@ -33,34 +46,42 @@ export function RoomTable() {
   });
 
   function handleChange(id: number, name: string) {
-    const newRoom = rooms.map(room => {
+    const newRoom = tableRooms.map(room => {
       if (room.id == id) return { id, name, status: room.status };
-
       return room;
     });
 
-    setRooms(newRoom);
+    setTableRooms(newRoom);
   }
 
-  function handleEdit(id: number) {
-    const newRooms = rooms.map(room => {
-      if (room.id == id)
-        return { ...room, status: room.status == '' ? 'EDIT' : '' };
+  async function handleEdit(id: number) {
+    const newRooms = await Promise.all(
+      tableRooms.map(async room => {
+        if (room.id == id) {
+          if (room.status) {
+            await updateRoom(id, room.name);
+          }
 
-      return room;
-    });
+          return { ...room, status: room.status ? null : 'EDIT' };
+        }
 
-    setRooms(newRooms);
+        return room;
+      })
+    );
+
+    setTableRooms(newRooms);
   }
 
-  function handleRemove(id: number) {
-    setRooms(rooms.filter(room => room.id !== id));
+  async function handleRemove(id: number) {
+    setTableRooms(tableRooms.filter(room => room.id !== id));
+    await deleteRoom(id);
   }
 
-  function handleAdd() {
-    const newRoom = { id: rooms.length, name: '', status: 'EDIT' };
+  async function handleAdd() {
+    const room = await createRoom('');
+    const newRoom = { id: room.id, name: '', status: 'EDIT' };
 
-    setRooms([...rooms, newRoom]);
+    setTableRooms([...tableRooms, newRoom]);
   }
 
   return (
@@ -131,7 +152,7 @@ export function RoomTable() {
           maxButtons={5}
           size="xs"
           layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-          total={defaultData.length}
+          total={rooms.length}
           limitOptions={[10, 30, 50]}
           limit={limit}
           activePage={page}

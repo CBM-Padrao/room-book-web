@@ -12,7 +12,9 @@ import { Admin } from './pages/admin';
 import { AdminLogin } from './pages/admin/login';
 
 import { BookingProvider } from './contexts/BookingContext.tsx';
+import { RoomProvider } from './contexts/RoomContext.tsx';
 import { UserProvider } from './contexts/UserContext.tsx';
+
 import { locale } from './lib/rsuite.ts';
 import { Root } from './layouts/Root.tsx';
 import { Rooms } from './pages/rooms.tsx';
@@ -50,9 +52,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <CustomProvider theme="dark" locale={locale}>
       <UserProvider>
-        <BookingProvider>
-          <RouterProvider router={router} />
-        </BookingProvider>
+        <RoomProvider>
+          <BookingProvider>
+            <RouterProvider router={router} />
+          </BookingProvider>
+        </RoomProvider>
       </UserProvider>
     </CustomProvider>
   </StrictMode>
