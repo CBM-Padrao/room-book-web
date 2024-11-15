@@ -4,6 +4,7 @@ import { Modal, SelectPicker, Button, DateRangePicker, Input } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import dayjs from 'dayjs';
 import { Booking, useBooking } from '../contexts/BookingContext';
+import { useRoom } from '../contexts/RoomContext';
 
 type BookingModalProps = {
   open: boolean;
@@ -19,10 +20,11 @@ export function BookingModal({
   handleClose
 }: Readonly<BookingModalProps>) {
   const { createBooking, updateBooking } = useBooking();
+  const { rooms } = useRoom();
 
-  const selectData = ['Sala1', 'Sala2', 'Sala3'].map(room => ({
-    label: room,
-    value: room
+  const selectData = rooms.map(room => ({
+    label: room.name,
+    value: room.name
   }));
 
   const [title, setTitle] = useState<string>(() => booking?.title ?? '');
