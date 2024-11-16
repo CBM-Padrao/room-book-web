@@ -1,19 +1,31 @@
+import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormEvent } from 'react';
 import { Button, Input } from 'rsuite';
 
 import Logo from '../assets/logoipsum.svg';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
+  const { logIn } = useAuth();
   const navigate = useNavigate();
+
   const [, setActiveKey] = useLocalStorage('activeKey', '1');
 
-  function handleSubmit(e: FormEvent) {
+  const [registration, setRegistration] = useState('');
+  const [password, setPassword] = useState('');
+
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     setActiveKey('1');
-    navigate('/');
+
+    try {
+      await logIn(registration, password);
+      navigate('/');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -25,8 +37,18 @@ export function Login() {
           onSubmit={handleSubmit}
           className="flex flex-col justify-center gap-6 mt-20"
         >
-          <Input type="text" placeholder="Matrícula" className="!p-3" />
-          <Input type="password" placeholder="Senha" className="!p-3" />
+          <Input
+            onChange={setRegistration}
+            type="text"
+            placeholder="Matrícula"
+            className="!p-3"
+          />
+          <Input
+            onChange={setPassword}
+            type="password"
+            placeholder="Senha"
+            className="!p-3"
+          />
 
           <Button
             appearance="primary"

@@ -14,10 +14,12 @@ import { AdminLogin } from './pages/admin/login';
 import { BookingProvider } from './contexts/BookingContext.tsx';
 import { RoomProvider } from './contexts/RoomContext.tsx';
 import { UserProvider } from './contexts/UserContext.tsx';
+import { AuthProvider } from './contexts/AuthContext.tsx';
 
 import { locale } from './lib/rsuite.ts';
 import { Root } from './layouts/Root.tsx';
 import { Rooms } from './pages/rooms.tsx';
+import { LoginRoot } from './layouts/LoginRoot.tsx';
 
 const router = createBrowserRouter([
   {
@@ -39,25 +41,32 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/admin/login',
-    element: <AdminLogin />
+    element: <LoginRoot />,
+    children: [
+      {
+        path: '/login',
+        element: <Login />
+      },
+      {
+        path: '/admin/login',
+        element: <AdminLogin />
+      }
+    ]
   }
 ]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <CustomProvider theme="dark" locale={locale}>
-      <UserProvider>
-        <RoomProvider>
-          <BookingProvider>
-            <RouterProvider router={router} />
-          </BookingProvider>
-        </RoomProvider>
-      </UserProvider>
+      <AuthProvider>
+        <UserProvider>
+          <RoomProvider>
+            <BookingProvider>
+              <RouterProvider router={router} />
+            </BookingProvider>
+          </RoomProvider>
+        </UserProvider>
+      </AuthProvider>
     </CustomProvider>
   </StrictMode>
 );
