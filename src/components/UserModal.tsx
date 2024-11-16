@@ -1,6 +1,9 @@
-import { useState } from 'react';
-import { Modal, Button, Input, Checkbox } from 'rsuite';
-import { User, useUser } from '../contexts/UserContext';
+import { FormEvent, useState } from 'react';
+import { Modal, Button, Input, Checkbox, InputGroup } from 'rsuite';
+import { useUser } from '../contexts/UserContext';
+
+import type { User } from '../contexts/UserContext';
+import { EyeClose, EyeRound } from '@rsuite/icons';
 
 type TableModalProps = {
   open: boolean;
@@ -20,17 +23,33 @@ export function UserModal({
   );
   const [name, setName] = useState(() => user?.name ?? '');
   const [email, setEmail] = useState(() => user?.email ?? '');
-  const [isAdmin, setIsAdmin] = useState(() => user?.isAdmin ?? false);
+  const [isAdmin, setIsAdmin] = useState(() => {
+    return user?.role === 'ADMIN' || user?.role === 'GESTOR';
+  });
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
-  function handleSubmit() {
-    const newUser = { registration, name, email, isAdmin };
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
 
-    if (user) updateUser(user, newUser);
-    else createUser(newUser);
+    const defaultRole = isAdmin ? 'GESTOR' : 'MEMBRO';
+    const role = user?.role === 'ADMIN' ? user.role : defaultRole;
+
+    const newUser = {
+      registration,
+      name,
+      email,
+      password,
+      role
+    };
+
+    if (user) await updateUser(user, newUser);
+    else await createUser(newUser);
 
     setRegistration('');
     setName('');
     setEmail('');
+    setPassword('');
     setIsAdmin(false);
     handleClose();
   }
@@ -38,7 +57,7 @@ export function UserModal({
   const actionText = user ? 'Editar' : 'Adicionar';
 
   return (
-    <Modal open={open} onClose={handleClose} size="lg">
+    <Modal open={open} onClose={handleClose} size="lg" overflow={false}>
       <Modal.Header>
         <Modal.Title>{actionText} Usuário</Modal.Title>
       </Modal.Header>
@@ -50,8 +69,22 @@ export function UserModal({
           <Input value={name} onChange={setName} />
           Email
           <Input type="email" value={email} onChange={setEmail} />
+          Senha
+          <InputGroup inside>
+            <Input
+              type={passwordVisible ? 'text' : 'password'}
+              value={password}
+              onChange={setPassword}
+            />
+            <InputGroup.Button
+              onClick={() => setPasswordVisible(!passwordVisible)}
+            >
+              {passwordVisible ? <EyeRound /> : <EyeClose />}
+            </InputGroup.Button>
+          </InputGroup>
           <Checkbox
             checked={isAdmin}
+            disabled={user?.role === 'ADMIN'}
             onChange={(_v, checked) => setIsAdmin(checked)}
           >
             Administrador

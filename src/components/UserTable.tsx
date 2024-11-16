@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Table as RSTable, Pagination, IconButton, Button } from 'rsuite';
 import { Edit, Trash } from '@rsuite/icons';
 import { UserModal } from './UserModal';
-import { User, useUser } from '../contexts/UserContext';
+import { useUser } from '../contexts/UserContext';
+
+import type { User } from '../contexts/UserContext';
 
 export function UserTable() {
   const { users, deleteUser } = useUser();
@@ -69,16 +71,18 @@ export function UserTable() {
         <RSTable.Column width={200}>
           <RSTable.HeaderCell>Administrador</RSTable.HeaderCell>
           <RSTable.Cell
-            dataKey="isAdmin"
+            dataKey="role"
             renderCell={rowData => {
-              const bgColor = (rowData as boolean)
-                ? 'bg-green-500'
-                : 'bg-red-500';
+              const isAdmin =
+                (rowData as string) === 'ADMIN' ||
+                (rowData as string) === 'GESTOR';
+
+              const bgColor = isAdmin ? 'bg-green-500' : 'bg-red-500';
 
               return (
                 <div className="flex items-center">
                   <div className={`w-4 h-4 rounded-full mr-2 ${bgColor}`}></div>
-                  <span>{(rowData as boolean) ? 'Sim' : 'Não'}</span>
+                  <span>{isAdmin ? 'Sim' : 'Não'}</span>
                 </div>
               );
             }}
