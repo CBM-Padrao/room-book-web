@@ -1,9 +1,9 @@
 import { Sidenav, Nav } from 'rsuite';
-import { Admin, Dashboard, Gear, Peoples } from '@rsuite/icons';
+import { Tools, Dashboard, Peoples } from '@rsuite/icons';
 import { JSXElementConstructor, ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconProps } from '@rsuite/icons/esm/Icon';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuth } from '../contexts/AuthContext';
 
 const navItems: NavItemProps[] = [
   {
@@ -14,46 +14,24 @@ const navItems: NavItemProps[] = [
   },
   {
     eventKey: '2',
-    title: 'User Group',
+    title: 'Conta',
     icon: <Peoples />,
-    path: '/'
+    path: '/account'
   },
   {
     eventKey: '3',
-    title: 'Settings',
-    icon: <Gear />,
+    title: 'Administração',
+    icon: <Tools />,
     path: '/',
+    auth: ['ADMIN', 'GESTOR'],
     children: [
       {
         eventKey: '3-1',
-        title: 'Applications',
-        path: '/'
-      },
-      {
-        eventKey: '3-2',
-        title: 'Channels',
-        path: '/'
-      },
-      {
-        eventKey: '3-3',
-        title: 'Versions',
-        path: '/'
-      }
-    ]
-  },
-  {
-    eventKey: '4',
-    title: 'Administração',
-    icon: <Admin />,
-    path: '/',
-    children: [
-      {
-        eventKey: '4-1',
         title: 'Adicionar membros',
         path: '/admin'
       },
       {
-        eventKey: '4-2',
+        eventKey: '3-2',
         title: 'Adicionar salas',
         path: '/rooms'
       }
@@ -62,10 +40,10 @@ const navItems: NavItemProps[] = [
 ];
 
 export function Sidebar() {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [expanded, setExpanded] = useState(true);
-  const [activeKey, setActiveKey] = useLocalStorage('activeKey', '1');
+  const [activeKey, setActiveKey] = useState('1');
 
   function handleNav(eventKey: string) {
     const items = [
@@ -82,19 +60,28 @@ export function Sidebar() {
   }
 
   return (
-    <Sidenav expanded={expanded} className="max-w-[256px]">
+    <Sidenav expanded={false} appearance="subtle" className="max-w-[256px]">
       <Sidenav.Body>
         <Nav activeKey={activeKey}>
-          {navItems.map(item =>
-            item.children ? (
-              <NavMenu key={item.eventKey} item={item} handleNav={handleNav} />
-            ) : (
-              <NavItem key={item.eventKey} item={item} handleNav={handleNav} />
-            )
-          )}
+          {navItems.map(item => {
+            if (item.auth && !item.auth.includes(user!.role)) return null;
+
+            if (item.children) {
+              return (
+                <NavMenu
+                  key={item.eventKey}
+                  handleNav={handleNav}
+                  item={item}
+                />
+              );
+            }
+
+            return (
+              <NavItem key={item.eventKey} handleNav={handleNav} item={item} />
+            );
+          })}
         </Nav>
       </Sidenav.Body>
-      <Sidenav.Toggle onToggle={expanded => setExpanded(expanded)} />
     </Sidenav>
   );
 }
@@ -105,6 +92,7 @@ type NavItemProps = {
   icon?: ReactElement<IconProps, string | JSXElementConstructor<unknown>>;
   path: string;
   children?: NavItemProps[];
+  auth?: string[];
 };
 
 type HandleNav = (eventKey: string) => void;
