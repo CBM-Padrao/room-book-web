@@ -7,11 +7,11 @@ import {
   useEffect
 } from 'react';
 import { api } from '../lib/axios';
+import { useAuth } from './AuthContext';
 
 export type Room = {
   id: number;
   name: string;
-  disabledUntil: Date | null;
   createdAt: string;
   updatedAt: Date | null;
 };
@@ -35,14 +35,18 @@ export function useRoom() {
 }
 
 export function RoomProvider({ children }: Readonly<RoomProviderProps>) {
+  const { user } = useAuth();
+
   const [rooms, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {
-    (async () => {
+    async function loadRooms() {
       const response = await api.get<Room[]>('/rooms');
       setRooms(response.data);
-    })();
-  }, []);
+    }
+
+    loadRooms();
+  }, [user]);
 
   const createRoom = useCallback(
     async (name: string) => {
