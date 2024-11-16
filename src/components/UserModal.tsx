@@ -8,21 +8,27 @@ type TableModalProps = {
   user: User | null;
 };
 
-export function UserModal({ open, handleClose, user }: Readonly<TableModalProps>) {
+export function UserModal({
+  open,
+  handleClose,
+  user
+}: Readonly<TableModalProps>) {
   const { createUser, updateUser } = useUser();
 
-  const [register, setRegister] = useState(() => user?.register ?? '');
+  const [registration, setRegistration] = useState(
+    () => user?.registration ?? ''
+  );
   const [name, setName] = useState(() => user?.name ?? '');
   const [email, setEmail] = useState(() => user?.email ?? '');
   const [isAdmin, setIsAdmin] = useState(() => user?.isAdmin ?? false);
 
   function handleSubmit() {
-    const newUser = { register, name, email, isAdmin };
+    const newUser = { registration, name, email, isAdmin };
 
-    if (user) updateUser(user, newUser); 
+    if (user) updateUser(user, newUser);
     else createUser(newUser);
 
-    setRegister('');
+    setRegistration('');
     setName('');
     setEmail('');
     setIsAdmin(false);
@@ -39,7 +45,7 @@ export function UserModal({ open, handleClose, user }: Readonly<TableModalProps>
       <Modal.Body>
         <form className="flex flex-col gap-4 h-96">
           Matrícula
-          <Input value={register} onChange={setRegister} />
+          <Input value={registration} onChange={setRegistration} />
           Nome
           <Input value={name} onChange={setName} />
           Email

@@ -53,7 +53,7 @@ export function UserTable() {
       >
         <RSTable.Column width={100} align="center" fixed>
           <RSTable.HeaderCell>Matrícula</RSTable.HeaderCell>
-          <RSTable.Cell dataKey="register" />
+          <RSTable.Cell dataKey="registration" />
         </RSTable.Column>
 
         <RSTable.Column width={200}>
