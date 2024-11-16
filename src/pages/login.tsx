@@ -3,22 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Input } from 'rsuite';
 
 import Logo from '../assets/logoipsum.svg';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
   const { logIn } = useAuth();
   const navigate = useNavigate();
 
-  const [, setActiveKey] = useLocalStorage('activeKey', '1');
-
   const [registration, setRegistration] = useState('');
   const [password, setPassword] = useState('');
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-
-    setActiveKey('1');
 
     try {
       await logIn(registration, password);
