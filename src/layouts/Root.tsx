@@ -10,7 +10,7 @@ export function Root() {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen items-center">
       <Sidebar />
       <Outlet />
     </div>
