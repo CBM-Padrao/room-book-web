@@ -20,6 +20,7 @@ import { locale } from './lib/rsuite.ts';
 import { Root } from './layouts/Root.tsx';
 import { Rooms } from './pages/rooms.tsx';
 import { LoginRoot } from './layouts/LoginRoot.tsx';
+import { Account } from './pages/account.tsx';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: 'rooms',
         element: <Rooms />
+      },
+      {
+        path: 'account',
+        element: <Account />
       }
     ]
   },
