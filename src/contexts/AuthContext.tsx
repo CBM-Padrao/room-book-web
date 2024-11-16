@@ -66,7 +66,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     }
 
     setUserIfToken();
-  }, [token, user, userId]);
+  }, [token, userId]);
 
   const logIn = useCallback(
     async (registration: string, password: string) => {
