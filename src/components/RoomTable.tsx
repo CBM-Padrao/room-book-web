@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Table as RSTable,
   Pagination,
@@ -18,17 +18,9 @@ type TableRoom = {
 export function RoomTable() {
   const { rooms, createRoom, updateRoom, deleteRoom } = useRoom();
 
-  const [tableRooms, setTableRooms] = useState<TableRoom[]>([]);
-
-  useEffect(() => {
-    if (rooms.length > 0) {
-      setTableRooms(
-        rooms.map(({ id, name }) => {
-          return { id, name, status: null };
-        })
-      );
-    }
-  }, [rooms]);
+  const [tableRooms, setTableRooms] = useState<TableRoom[]>(() => {
+    return rooms.map(room => ({ ...room, status: null }));
+  });
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
@@ -185,6 +177,7 @@ function EditableCell({
         <Input
           defaultValue={name}
           onChange={value => handleChange(id, value)}
+          autoFocus
         />
       ) : (
         name
