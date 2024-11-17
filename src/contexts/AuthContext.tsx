@@ -14,7 +14,7 @@ type AuthProviderProps = {
   children: React.ReactNode;
 };
 
-type User = {
+export type User = {
   id: number;
   name: string;
   email: string;
@@ -70,22 +70,18 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
 
   const logIn = useCallback(
     async (registration: string, password: string) => {
-      try {
-        const response = await api.post<AuthResponse>('/auth/login', {
-          registration,
-          password
-        });
+      const response = await api.post<AuthResponse>('/auth/login', {
+        registration,
+        password
+      });
 
-        const { token, user } = response.data;
+      const { token, user } = response.data;
 
-        setUser(user);
-        setToken(token);
-        setUserId(user.id);
+      setUser(user);
+      setToken(token);
+      setUserId(user.id);
 
-        api.defaults.headers.common.authorization = `Bearer ${token}`;
-      } catch (error) {
-        console.error(error);
-      }
+      api.defaults.headers.common.authorization = `Bearer ${token}`;
     },
     [setToken, setUserId]
   );

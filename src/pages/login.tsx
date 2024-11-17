@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input } from 'rsuite';
+import { Button, Input, Notification, useToaster } from 'rsuite';
 
 import Logo from '../assets/logoipsum.svg';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 export function Login() {
   const { logIn } = useAuth();
   const navigate = useNavigate();
+  const toaster = useToaster();
 
   const [registration, setRegistration] = useState('');
   const [password, setPassword] = useState('');
@@ -18,8 +19,15 @@ export function Login() {
     try {
       await logIn(registration, password);
       navigate('/');
-    } catch (error) {
-      console.error(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toaster.push(
+        <Notification type="error" header="Erro ao fazer login" closable>
+          {error.response?.data.message ||
+            'Houve um erro ao fazer login. Tente novamente.'}
+        </Notification>,
+        { placement: 'bottomCenter', duration: 5000 }
+      );
     }
   }
 
