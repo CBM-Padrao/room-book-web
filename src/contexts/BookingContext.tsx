@@ -3,12 +3,14 @@ import {
   createContext,
   useState,
   useMemo,
-  useCallback
+  useCallback,
+  useEffect
 } from 'react';
 
 import { useAuth, type User } from './AuthContext';
 import type { Room } from './RoomContext';
 import { api } from '../lib/axios';
+import dayjs from 'dayjs';
 
 export type Booking = {
   id?: number;
@@ -16,6 +18,7 @@ export type Booking = {
   end: Date;
   title: string;
   roomId: number;
+  room: string;
   participants: number[];
 };
 
@@ -23,6 +26,7 @@ type BookingResponse = {
   id: number;
   room: Room;
   user: User;
+  title: string;
   startTime: string;
   endTime: string;
   participants: User[];
@@ -50,9 +54,32 @@ export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
 
+  useEffect(() => {
+    async function loadBookings() {
+      const { data } = await api.post<BookingResponse[]>('/bookings', {
+        userId: user!.id
+      });
+
+      const bookings = data.map(b => ({
+        id: b.id,
+        start: dayjs(b.startTime).toDate(),
+        end: dayjs(b.endTime).toDate(),
+        title: b.title,
+        roomId: b.room.id,
+        room: b.room.name,
+        participants: b.participants.map(p => p.id)
+      }));
+
+      setBookings(bookings);
+    }
+
+    loadBookings();
+  }, [user]);
+
   const createBooking = useCallback(
     async (booking: Booking) => {
       const { data } = await api.post<BookingResponse>('/bookings/create', {
+        title: booking.title,
         roomId: booking.roomId,
         userId: user!.id,
         participantIds: booking.participants,
@@ -62,10 +89,11 @@ export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
 
       booking = {
         id: data.id,
-        start: new Date(data.startTime),
-        end: new Date(data.endTime),
-        title: data.room.name,
+        start: dayjs(data.startTime).toDate(),
+        end: dayjs(data.endTime).toDate(),
+        title: data.title,
         roomId: data.room.id,
+        room: data.room.name,
         participants: data.participants.map(p => p.id)
       };
 

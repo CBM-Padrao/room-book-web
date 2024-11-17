@@ -55,11 +55,11 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
             <HStack className="justify-between">
               <VStack>
                 <Text>
-                  {booking.roomId} — {booking.title}
+                  {booking.room} — {booking.title}
                 </Text>
                 <Text>
-                  {dayjs(booking.start).format('HH:mm')},{' '}
-                  {dayjs(booking.end).format('HH:mm')}
+                  {dayjs(booking.start).subtract(3, 'hour').format('HH:mm')},{' '}
+                  {dayjs(booking.end).subtract(3, 'hour').format('HH:mm')}
                 </Text>
               </VStack>
 
