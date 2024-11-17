@@ -6,11 +6,26 @@ import {
   useCallback
 } from 'react';
 
+import { useAuth, type User } from './AuthContext';
+import type { Room } from './RoomContext';
+import { api } from '../lib/axios';
+
 export type Booking = {
+  id?: number;
   start: Date;
   end: Date;
   title: string;
-  roomId: string;
+  roomId: number;
+  participants: number[];
+};
+
+type BookingResponse = {
+  id: number;
+  room: Room;
+  user: User;
+  startTime: string;
+  endTime: string;
+  participants: User[];
 };
 
 type BookingProviderProps = {
@@ -19,7 +34,7 @@ type BookingProviderProps = {
 
 type BookingContextData = {
   bookings: Booking[];
-  createBooking: (booking: Booking) => void;
+  createBooking: (booking: Booking) => Promise<void>;
   deleteBooking: (booking: Booking) => void;
   updateBooking: (oldBooking: Booking, newBooking: Booking) => void;
 };
@@ -32,13 +47,31 @@ export function useBooking() {
 }
 
 export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
+  const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
 
   const createBooking = useCallback(
-    (booking: Booking) => {
+    async (booking: Booking) => {
+      const { data } = await api.post<BookingResponse>('/bookings/create', {
+        roomId: booking.roomId,
+        userId: user!.id,
+        participantIds: booking.participants,
+        startTime: booking.start.toISOString(),
+        endTime: booking.end.toISOString()
+      });
+
+      booking = {
+        id: data.id,
+        start: new Date(data.startTime),
+        end: new Date(data.endTime),
+        title: data.room.name,
+        roomId: data.room.id,
+        participants: data.participants.map(p => p.id)
+      };
+
       setBookings([...bookings, booking]);
     },
-    [bookings]
+    [bookings, user]
   );
 
   const updateBooking = useCallback(
