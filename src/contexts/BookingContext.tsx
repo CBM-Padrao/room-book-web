@@ -10,7 +10,7 @@ import {
 import { useAuth, type User } from './AuthContext';
 import type { Room } from './RoomContext';
 import { api } from '../lib/axios';
-import dayjs from 'dayjs';
+import { BookingMapper } from '../mapper/BookingMapper';
 
 export type Booking = {
   id?: number;
@@ -18,11 +18,11 @@ export type Booking = {
   end: Date;
   title: string;
   roomId: number;
-  room: string;
+  room?: string;
   participants: number[];
 };
 
-type BookingResponse = {
+export type BookingResponse = {
   id: number;
   room: Room;
   user: User;
@@ -39,8 +39,8 @@ type BookingProviderProps = {
 type BookingContextData = {
   bookings: Booking[];
   createBooking: (booking: Booking) => Promise<void>;
-  deleteBooking: (booking: Booking) => void;
-  updateBooking: (oldBooking: Booking, newBooking: Booking) => void;
+  deleteBooking: (booking: Booking) => Promise<void>;
+  updateBooking: (oldBooking: Booking, newBooking: Booking) => Promise<void>;
 };
 
 const BookingContext = createContext({} as BookingContextData);
@@ -56,19 +56,15 @@ export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
 
   useEffect(() => {
     async function loadBookings() {
+      if (!user) {
+        return;
+      }
+
       const { data } = await api.post<BookingResponse[]>('/bookings', {
-        userId: user!.id
+        userId: user.id
       });
 
-      const bookings = data.map(b => ({
-        id: b.id,
-        start: dayjs(b.startTime).toDate(),
-        end: dayjs(b.endTime).toDate(),
-        title: b.title,
-        roomId: b.room.id,
-        room: b.room.name,
-        participants: b.participants.map(p => p.id)
-      }));
+      const bookings = data.map(BookingMapper.mapBookingResponseToBooking);
 
       setBookings(bookings);
     }
@@ -78,24 +74,17 @@ export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
 
   const createBooking = useCallback(
     async (booking: Booking) => {
-      const { data } = await api.post<BookingResponse>('/bookings/create', {
-        title: booking.title,
-        roomId: booking.roomId,
-        userId: user!.id,
-        participantIds: booking.participants,
-        startTime: booking.start.toISOString(),
-        endTime: booking.end.toISOString()
-      });
+      const bookingRequest = BookingMapper.mapBookingToBookingRequest(
+        booking,
+        user!
+      );
 
-      booking = {
-        id: data.id,
-        start: dayjs(data.startTime).toDate(),
-        end: dayjs(data.endTime).toDate(),
-        title: data.title,
-        roomId: data.room.id,
-        room: data.room.name,
-        participants: data.participants.map(p => p.id)
-      };
+      const { data } = await api.post<BookingResponse>(
+        '/bookings/create',
+        bookingRequest
+      );
+
+      booking = BookingMapper.mapBookingResponseToBooking(data);
 
       setBookings([...bookings, booking]);
     },
@@ -103,27 +92,37 @@ export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
   );
 
   const updateBooking = useCallback(
-    (oldBooking: Booking, newBooking: Booking) => {
-      const newBookings = bookings.map(b => {
-        if (b.start === oldBooking.start && b.roomId === oldBooking.roomId) {
-          return newBooking;
+    async (oldBooking: Booking, newBooking: Booking) => {
+      const newBookings = bookings.filter(b => {
+        if (b.id !== oldBooking.id) {
+          return b;
         }
-
-        return b;
       });
 
-      setBookings(newBookings);
+      const { data } = await api.put('/bookings/update', {
+        id: oldBooking.id,
+        ...newBooking,
+        participantIds: newBooking.participants,
+        startTime: newBooking.start.toISOString(),
+        endTime: newBooking.end.toISOString()
+      });
+
+      const booking = BookingMapper.mapBookingResponseToBooking(data);
+
+      setBookings([...newBookings, booking]);
     },
     [bookings]
   );
 
   const deleteBooking = useCallback(
-    (booking: Booking) => {
+    async (booking: Booking) => {
       const newBookings = bookings.filter(b => {
-        if (b.start !== booking.start && b.roomId !== booking.roomId) {
+        if (b.id !== booking.id) {
           return b;
         }
       });
+
+      await api.delete(`/bookings/delete/${booking.id}`);
 
       setBookings(newBookings);
     },

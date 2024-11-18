@@ -20,6 +20,10 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
     setOpen(false);
   }
 
+  async function handleDelete(booking: Booking) {
+    await deleteBooking(booking);
+  }
+
   if (bookings.length === 0) {
     return (
       <VStack className="justify-center bg-[#121416] w-96 self-stretch rounded-[6px] border-[#292d33] border-[1px]">
@@ -51,15 +55,15 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
         </HStack>
 
         {bookings.map(booking => (
-          <List.Item key={booking.start.getHours()}>
+          <List.Item key={booking.id}>
             <HStack className="justify-between">
               <VStack>
                 <Text>
                   {booking.room} — {booking.title}
                 </Text>
                 <Text>
-                  {dayjs(booking.start).subtract(3, 'hour').format('HH:mm')},{' '}
-                  {dayjs(booking.end).subtract(3, 'hour').format('HH:mm')}
+                  {dayjs(booking.start).format('HH:mm')},{' '}
+                  {dayjs(booking.end).format('HH:mm')}
                 </Text>
               </VStack>
 
@@ -80,7 +84,7 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
                   appearance="subtle"
                   size="sm"
                   onClick={() => {
-                    deleteBooking(booking);
+                    handleDelete(booking);
                   }}
                 >
                   <Trash />

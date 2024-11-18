@@ -83,7 +83,7 @@ export function BookingModal({
     };
 
     try {
-      if (booking) updateBooking(booking, newBooking);
+      if (booking) await updateBooking(booking, newBooking);
       else await createBooking(newBooking);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
