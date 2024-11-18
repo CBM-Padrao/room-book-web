@@ -1,9 +1,10 @@
 import { FormEvent, useState } from 'react';
-import { Modal, Button, Input, Checkbox, InputGroup } from 'rsuite';
+import { Modal, Button, Input, InputGroup, RadioGroup, Radio } from 'rsuite';
 import { useUser } from '../contexts/UserContext';
 
 import type { User } from '../contexts/UserContext';
 import { EyeClose, EyeRound } from '@rsuite/icons';
+import { useAuth } from '../contexts/AuthContext';
 
 type TableModalProps = {
   open: boolean;
@@ -16,6 +17,7 @@ export function UserModal({
   handleClose,
   user
 }: Readonly<TableModalProps>) {
+  const { user: currentUser } = useAuth();
   const { createUser, updateUser } = useUser();
 
   const [registration, setRegistration] = useState(
@@ -23,17 +25,12 @@ export function UserModal({
   );
   const [name, setName] = useState(() => user?.name ?? '');
   const [email, setEmail] = useState(() => user?.email ?? '');
-  const [isAdmin, setIsAdmin] = useState(() => {
-    return user?.role === 'ADMIN' || user?.role === 'GESTOR';
-  });
+  const [role, setRole] = useState(() => user?.role ?? 'MEMBRO');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-
-    const defaultRole = isAdmin ? 'GESTOR' : 'MEMBRO';
-    const role = user?.role === 'ADMIN' ? user.role : defaultRole;
 
     const newUser = {
       registration,
@@ -50,19 +47,34 @@ export function UserModal({
     setName('');
     setEmail('');
     setPassword('');
-    setIsAdmin(false);
+    setRole('');
     handleClose();
   }
 
   const actionText = user ? 'Editar' : 'Adicionar';
+  const isCurrentAdmin = currentUser?.role === 'ADMIN';
 
   return (
-    <Modal open={open} onClose={handleClose} size="lg" overflow={false}>
+    <Modal open={open} onClose={handleClose} size="lg">
       <Modal.Header>
         <Modal.Title>{actionText} Usuário</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form className="flex flex-col gap-4 h-96">
+        <form className="flex flex-col gap-4">
+          <RadioGroup
+            name="radio-group-inline"
+            inline
+            appearance="picker"
+            value={role}
+            disabled={!isCurrentAdmin}
+            className="self-start flex items-center"
+            onChange={value => setRole(value as string)}
+          >
+            <label className="p-2 text-md text-zinc-400">Cargo</label>
+            <Radio value="ADMIN">Admin</Radio>
+            <Radio value="GESTOR">Gestor</Radio>
+            <Radio value="MEMBRO">Membro</Radio>
+          </RadioGroup>
           Matrícula
           <Input value={registration} onChange={setRegistration} />
           Nome
@@ -82,13 +94,6 @@ export function UserModal({
               {passwordVisible ? <EyeRound /> : <EyeClose />}
             </InputGroup.Button>
           </InputGroup>
-          <Checkbox
-            checked={isAdmin}
-            disabled={user?.role === 'ADMIN'}
-            onChange={(_v, checked) => setIsAdmin(checked)}
-          >
-            Administrador
-          </Checkbox>
         </form>
       </Modal.Body>
       <Modal.Footer>
