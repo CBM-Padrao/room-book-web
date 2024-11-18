@@ -11,7 +11,6 @@ import 'rsuite/dist/rsuite-no-reset.min.css';
 import { Login } from './pages/login';
 import { Home } from './pages/home';
 import { Admin } from './pages/admin';
-import { AdminLogin } from './pages/admin/login';
 
 import { BookingProvider } from './contexts/BookingContext.tsx';
 import { RoomProvider } from './contexts/RoomContext.tsx';
@@ -53,10 +52,6 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />
-      },
-      {
-        path: '/admin/login',
-        element: <AdminLogin />
       }
     ]
   }
