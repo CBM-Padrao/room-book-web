@@ -32,7 +32,6 @@ export function BookingModal({
   const { createBooking, updateBooking } = useBooking();
   const { rooms } = useRoom();
   const { users } = useUser();
-  const { bookings } = useBooking();
   const toaster = useToaster();
 
   const selectData = rooms.map(room => ({
@@ -103,40 +102,6 @@ export function BookingModal({
     handleClose();
   }
 
-  function hideHours(hour: number) {
-    if (hour < dayjs().hour() && dayjs().isSame(date, 'day')) {
-      return true;
-    }
-
-    const some = bookings.some(b => {
-      if (hour >= b.start.getHours() && hour < b.end.getHours()) {
-        return true;
-      }
-    });
-
-    if (some) return true;
-
-    return false;
-  }
-
-  function hideMinutes(minute: number) {
-    const some = bookings.some(b => {
-      if (
-        time &&
-        time[0].getHours() === b.start.getHours() &&
-        time[1].getHours() === b.end.getHours() &&
-        minute >= b.start.getMinutes() &&
-        minute < b.end.getMinutes()
-      ) {
-        return true;
-      }
-    });
-
-    if (some) return true;
-
-    return false;
-  }
-
   const titleText = booking ? 'Editar agendamento' : 'Agendar um horário';
   const buttonText = booking ? 'Editar' : 'Agendar';
 
@@ -164,8 +129,6 @@ export function BookingModal({
             caretAs={TimeRound}
             ranges={[]}
             onChange={setTime}
-            hideHours={hideHours}
-            hideMinutes={hideMinutes}
           />
         </form>
       </Modal.Body>
