@@ -18,6 +18,7 @@ export type Booking = {
   end: Date;
   title: string;
   roomId: number;
+  userId?: number;
   room?: string;
   participants: number[];
 };
@@ -60,11 +61,14 @@ export function BookingProvider({ children }: Readonly<BookingProviderProps>) {
         return;
       }
 
-      const { data } = await api.post<BookingResponse[]>('/bookings', {
-        userId: user.id
-      });
+      const { data } = await api.post<BookingResponse[]>('/bookings', {});
 
-      const bookings = data.map(BookingMapper.mapBookingResponseToBooking);
+      const bookings = data
+        .filter(
+          b =>
+            user.id === b.user.id || b.participants.some(u => u.id === user.id)
+        )
+        .map(BookingMapper.mapBookingResponseToBooking);
 
       setBookings(bookings);
     }

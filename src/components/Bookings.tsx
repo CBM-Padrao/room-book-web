@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { Edit, Trash } from '@rsuite/icons';
 import { Booking, useBooking } from '../contexts/BookingContext';
 import { BookingModal } from './BookingModal';
+import { useAuth } from '../contexts/AuthContext';
 
 type BookingsProps = {
   bookings: Booking[];
@@ -12,6 +13,7 @@ type BookingsProps = {
 
 export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
   const { deleteBooking } = useBooking();
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
   const [booking, setBooking] = useState<Booking | null>(null);
@@ -67,29 +69,31 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
                 </Text>
               </VStack>
 
-              <HStack>
-                <Button
-                  color="blue"
-                  appearance="subtle"
-                  size="sm"
-                  onClick={() => {
-                    setBooking(booking);
-                    setOpen(true);
-                  }}
-                >
-                  <Edit />
-                </Button>
-                <Button
-                  color="red"
-                  appearance="subtle"
-                  size="sm"
-                  onClick={() => {
-                    handleDelete(booking);
-                  }}
-                >
-                  <Trash />
-                </Button>
-              </HStack>
+              {booking.userId === user?.id && (
+                <HStack>
+                  <Button
+                    color="blue"
+                    appearance="subtle"
+                    size="sm"
+                    onClick={() => {
+                      setBooking(booking);
+                      setOpen(true);
+                    }}
+                  >
+                    <Edit />
+                  </Button>
+                  <Button
+                    color="red"
+                    appearance="subtle"
+                    size="sm"
+                    onClick={() => {
+                      handleDelete(booking);
+                    }}
+                  >
+                    <Trash />
+                  </Button>
+                </HStack>
+              )}
             </HStack>
           </List.Item>
         ))}
