@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Notification, useToaster } from 'rsuite';
 
-import Logo from '../assets/logoipsum.svg';
+import Logo from '../assets/logo.png';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
