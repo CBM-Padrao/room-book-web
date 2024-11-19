@@ -27,12 +27,12 @@ const navItems: NavItemProps[] = [
     children: [
       {
         eventKey: '3-1',
-        title: 'Adicionar membros',
+        title: 'Membros',
         path: '/admin'
       },
       {
         eventKey: '3-2',
-        title: 'Adicionar salas',
+        title: 'Salas',
         path: '/rooms'
       }
     ]
