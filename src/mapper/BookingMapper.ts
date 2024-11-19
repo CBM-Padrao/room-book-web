@@ -11,6 +11,7 @@ export class BookingMapper {
       title: bookingResponse.title,
       roomId: bookingResponse.room.id,
       room: bookingResponse.room.name,
+      userId: bookingResponse.user.id,
       participants: bookingResponse.participants.map(p => p.id)
     };
   }
