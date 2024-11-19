@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, HStack, List, Text, VStack } from 'rsuite';
 import dayjs from 'dayjs';
-import { Edit, Trash } from '@rsuite/icons';
+import { Edit, EyeRound, Trash } from '@rsuite/icons';
 import { Booking, useBooking } from '../contexts/BookingContext';
 import { BookingModal } from './BookingModal';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,6 +16,7 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
   const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
   const [booking, setBooking] = useState<Booking | null>(null);
 
   function handleClose() {
@@ -44,6 +45,7 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
           open={open}
           date={booking.start}
           handleClose={handleClose}
+          readOnly={readOnly}
         />
       )}
 
@@ -69,7 +71,7 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
                 </Text>
               </VStack>
 
-              {booking.userId === user?.id && (
+              {booking.userId === user?.id ? (
                 <HStack>
                   <Button
                     color="blue"
@@ -93,6 +95,19 @@ export function Bookings({ bookings, handleOpen }: Readonly<BookingsProps>) {
                     <Trash />
                   </Button>
                 </HStack>
+              ) : (
+                <Button
+                  color="green"
+                  appearance="subtle"
+                  size="sm"
+                  onClick={() => {
+                    setBooking(booking);
+                    setReadOnly(true);
+                    setOpen(true);
+                  }}
+                >
+                  <EyeRound />
+                </Button>
               )}
             </HStack>
           </List.Item>

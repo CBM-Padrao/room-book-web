@@ -20,6 +20,7 @@ type BookingModalProps = {
   open: boolean;
   date: Date | null;
   booking?: Booking | null;
+  readOnly?: boolean;
   handleClose: () => void;
 };
 
@@ -27,6 +28,7 @@ export function BookingModal({
   open,
   date,
   booking,
+  readOnly,
   handleClose
 }: Readonly<BookingModalProps>) {
   const { createBooking, updateBooking } = useBooking();
@@ -102,7 +104,9 @@ export function BookingModal({
     handleClose();
   }
 
-  const titleText = booking ? 'Editar agendamento' : 'Agendar um horário';
+  let titleText = booking ? 'Editar agendamento' : 'Agendar um horário';
+  titleText = readOnly ? `Detalhes de ${booking?.title}` : titleText;
+
   const buttonText = booking ? 'Editar' : 'Agendar';
 
   return (
@@ -113,14 +117,20 @@ export function BookingModal({
       <Modal.Body>
         <form className="flex flex-col gap-4 h-96">
           Título
-          <Input value={title} onChange={setTitle} />
+          <Input value={title} onChange={setTitle} disabled={readOnly} />
           Sala
-          <SelectPicker value={room} data={selectData} onChange={setRoom} />
+          <SelectPicker
+            value={room}
+            data={selectData}
+            onChange={setRoom}
+            disabled={readOnly}
+          />
           Participantes
           <TagPicker
             data={tagData}
             value={participants}
             onChange={setParticipants}
+            disabled={readOnly}
           />
           Horário
           <DateRangePicker
@@ -129,18 +139,21 @@ export function BookingModal({
             caretAs={TimeRound}
             ranges={[]}
             onChange={setTime}
+            disabled={readOnly}
           />
         </form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button
-          appearance="primary"
-          onClick={handleSubmit}
-          disabled={!room || !date || !time || time[0] >= time[1]}
-        >
-          {buttonText}
-        </Button>
-      </Modal.Footer>
+      {!readOnly && (
+        <Modal.Footer>
+          <Button
+            appearance="primary"
+            onClick={handleSubmit}
+            disabled={!room || !date || !time || time[0] >= time[1]}
+          >
+            {buttonText}
+          </Button>
+        </Modal.Footer>
+      )}
     </Modal>
   );
 }
